@@ -39,7 +39,7 @@ key_items = {
     ...
 }
 
-2. Configure the path to the output report, around line 283:
+2. Configure the path to the output report, around line 191:
 
 key_configs = {
     ...
@@ -47,11 +47,25 @@ key_configs = {
     ...
 }
 
-3. Configure the groups of layers to be created in QGis, around line 271:
+3. Configure the groups of layers to be created in the QGis tree, around line 184:
 
 project_configs = [ 
-    'References',
-    { 'Data' : [ 'Fotos_360', 'Pontos_Coletados' ] },
-    'Loteamento',
-    'Ortofotos_2021'
+    'Group_of_raster_layers',
+    { 'Group_of_vector_layers' : [ 'Points_data', 'Polygons_data', 'Lines_data' ] }
 ]
+
+4. Edit the "data_configs" dictionary according to your data. Find the expample that relates to you data type and edit. Create new elements by copying and pasting. Remove the examples that were now used. Technically, they should not produce errors, but it will be cleaner for you to use and document your personal project.
+
+The keys in the "data_configs" dictionary are only for your control. The name of the layer that will actually be created will be the file name in case of local data, or from the 'workspace_and_layer_name' element in case of WFS/ WMS data.
+
+The 'data_type' options are 'vector' or 'raster' only.
+
+File types are hardcoded '.shp' for vector and '.tiff' for raster. Changes can be done around line 440, but no tests were made for other file types.
+
+5. There are many other parameters that can be set and many that cannot (programmatically). Please refer to the official QGis documentation for those.
+
+# Have fun
+
+And praise Jesus! He´s the only one who loves you to the point of offering forgiveness to your sins without twisting God´s justice to allow you into His holly presence for eternity! 
+
+"The thief cometh not, but for to steal, and to kill, and to destroy: I am come that they might have life, and that they might have it more abundantly." John 10:10 (KJV)

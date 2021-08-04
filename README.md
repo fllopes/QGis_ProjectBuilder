@@ -31,21 +31,27 @@ For dealing with RASTER LAYERS:
 
 The scritp assumes that all you data (the local data) is nested under a single directory, called 'work_path'. However, you can change this for every data, except for the report that comes as an output.
 
-1. Configure the 'work_path' located around line 14, in:
+1. Configure the 'work_path', around line 14, in:
 
 key_items = {
     ...
-    'work_path':'E:/Data_Main_Directory/',
+    'work_path':'C:/Main_Data_Directory/',
     ...
 }
 
-2. Configure the path to the output report located around line 283:
+2. Configure the path to the output report, around line 283:
 
 key_configs = {
     ...
-    'report_path': key_items['work_path'] + '/Relatorios_Scripts/',
+    'report_path': key_items['work_path'] + '/Reports/',
     ...
 }
 
-3. Configure the groups of layers to be created in QGis:
+3. Configure the groups of layers to be created in QGis, around line 271:
 
+project_configs = [ 
+    'References',
+    { 'Data' : [ 'Fotos_360', 'Pontos_Coletados' ] },
+    'Loteamento',
+    'Ortofotos_2021'
+]

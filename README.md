@@ -2,7 +2,7 @@
 This script automates the creation of a project in QGis, importing data and setting up the visuals. This includes options such as transparency, colors, outlines and rules based visualization and scale dependent visualisation.
 
 
-# Explorint Your Data
+# Exploring Your Data
 
 I suggest the following code snippets to explore your data and help understanding the options you need to configure in the script.
 

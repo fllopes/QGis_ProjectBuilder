@@ -1,18 +1,29 @@
 # Automates the creation of the project structure
 # Imports and styles the required necessary data
-# @author Filipe Lopes, 02/07/2021
+# @author Filipe Lopes, 04/08/2021
 
+import os
 from pathlib import Path
 import datetime
+
+
+
+key_items = {
+    "timing": [],
+    'work_path':'C:/Main_Data_Directory/',
+    "script_version":  '1_1_0_prod' # Use "prod" for "production" and "dev" for "development"
+}
+
 
 
 data_configs = {
 
     'polygon_layer_1': {
         'load': True,
-        'path': 'C:/.../',
+        'path': key_items['work_path'] + '/Polygon_data_1/',
         'layer_group': 'Polygons_data',             # Must be added in the 'project_configs' (here, mention only the subgroup, when is the case)
         'data_type': 'vector',
+        'connection':'ogr',
         'appearence': {
             'min_scale': 0 ,
             'max_scale': 0,
@@ -29,29 +40,30 @@ data_configs = {
 
     'polygon_layer_2': {
         'load': True,
-        'path': 'C:/.../',
+        'path': key_items['work_path'] + '/Polygon_data_2/',
         'layer_group': 'Polygons_data',             # Must be added in the 'project_configs' (here, mention only the subgroup, when is the case)
         'data_type': 'vector',
+        'connection':'ogr',
         'appearence': {
-            'min_scale': 75000 ,
+            'min_scale': 0 ,
             'max_scale': 0,
             'style': {
-                'color': '190,178,151,0',            # Fill color: R,G,B,Transparency
-                'outline_color': '190,151,87,255',   # R,G,B,Transparency
+                'color': '255,158,23,0',            # Fill color: R,G,B,Transparency
+                'outline_color': '35,35,35,255',    # R,G,B,Transparency
                 'outline_style': 'solid',
-                'outline_width': '0.46',
+                'outline_width': '0.26',
                 'outline_width_unit': 'MM',
                 'style': 'solid'
             }
         }
     },
 
-
-    'Points_layer': {
+    'Points_layer_1': {
         'load': True,
-        'path': 'C:/.../',
+        'path': key_items['work_path'] + '/Points_data_1/',
         'layer_group': 'Points_data',                 # Must be added in the 'project_configs' (here, mention only the subgroup, when is the case)
         'data_type': 'vector',
+        'connection':'ogr',
         'appearence': {
             'min_scale': 5000.0 ,
             'max_scale': 0,
@@ -69,9 +81,10 @@ data_configs = {
 
     'Points_data_with_Rules_based_visualization': {
         'load': True,
-        'path': 'C:/.../',
+        'path': key_items['work_path'] + '/Points_data_2/',
         'layer_group': 'Points_data',                 # Must be added in the 'project_configs' (here, mention only the subgroup, when is the case)
         'data_type': 'vector',
+        'connection':'ogr',
         'appearence': {
             'min_scale': 3000.0 ,
             'max_scale': 0,
@@ -89,31 +102,59 @@ data_configs = {
             ]
         }
     },
-  
+
     'Lines_data_layer': {
         'load': True,
-        'path': 'C:/.../',
+        'path': key_items['work_path'] + '/Line_data/',
         'layer_group': 'Lines_data',                # Must be added in the 'project_configs' (here, mention only the subgroup, when is the case)
         'data_type': 'vector',
+        'connection':'ogr',
         'appearence': {
-            'min_scale': 50000.0 ,
+            'min_scale': 150000.0 ,
             'max_scale': 0,
             'style': {
-                'color': '255,158,23,0',            # Fill color: R,G,B,Transparency
-                'customdash': '5;2',                # Padrão de linha pontilhada: 5;2
-                'line_color': '137,201,253,255',    # Cor da linha do contorno: R,G,B,Transparency
-                'line_width': '0.36',               # Espessura da linha do contorno
-                'line_width_unit': 'MM',
-                'line_style': 'dot'                 # Estilo de linha: pontilhada
+                'line_color': '125,139,143,255',    # R,G,B,Transparency
+                'customdash': '5;2',                # Dashed line pattern: 5;2
+                'line_style': 'solid',
+                'line_width': '0.26',
+                'line_width_unit': 'MM'
             }
         }
     },
 
-    'Several_raster_layers_style_1': {
+    'WFS_Vector_Data': {
         'load': True,
-        'path': 'C:/.../',
+        'path': 'http://.../geoserver/wfs',
+        'layer_group': 'Polygons_data',
+        'data_type': 'vector',
+        'connection':'WFS',
+        'workspace_and_layer_name':'some-workspace:some-vector-layer-on-server',
+        'user':'pmsv-funcate',
+        'psw':'123pmsv',
+        'appearence': {
+            'min_scale': 3000.0 ,
+            'max_scale': 0,
+            'rules': [
+                {
+                    'label': 'Fachada OK',
+                    'expression': '"fachada" is not NULL',
+                    'fill_color': '#01abff'
+                },
+                {
+                    'label': 'Sem Fachada',
+                    'expression': '"fachada" is NULL',
+                    'fill_color': '#faa105'
+                }
+            ]
+        }
+    },
+
+    'Several_local_raster_layers_style_1': {
+        'load': True,
+        'path': key_items['work_path'] + '/Local_raster_data/',
         'layer_group': 'Group_of_raster_layers',    # Must be added in the 'project_configs' (here, mention only the subgroup, when is the case)
         'data_type': 'raster',
+        'connection':'',
         'appearence': {
             'min_scale': 1000.0 ,
             'max_scale': 350.0,
@@ -121,11 +162,14 @@ data_configs = {
         }
     },
 
-    'Several_raster_layers_style_2': {
+    'WMS_Raster_Data': {
         'load': True,
-        'path': 'C:/.../',
-        'layer_group': 'Group_of_raster_layers',    # Must be added in the 'project_configs' (here, mention only the subgroup, when is the case)
+        'path': 'http://.../geoserver/ows?version=1.3.0',
+        'layer_group': 'Group_of_raster_layers',
         'data_type': 'raster',
+        'connection':'WMS',
+        'workspace_and_layer_name':'some-workspace:some-raster-layer-on-server',
+        'crs':'EPSG:31983',
         'appearence': {
             'min_scale': 1000.0 ,
             'max_scale': 0,
@@ -136,7 +180,7 @@ data_configs = {
 
 
 
-# List of layer groups to be created in the layer tree. Groups with subgroups are in dictionaries.
+# List of groups. Groups with subgroups are in dictionaries.
 project_configs = [ 
     'Group_of_raster_layers',
     { 'Group_of_vector_layers' : [ 'Points_data', 'Polygons_data', 'Lines_data' ] }
@@ -144,17 +188,10 @@ project_configs = [
 
 
 
-key_items = {
-    "timing": [],
-    "script_version":  '1_0_0'
-}
-
-
-
 key_configs = {
     'report_on_screen': True,
     'report_to_file': True,
-    'report_path': 'C:/.../',
+    'report_path': key_items['work_path'] + '/Reports/',
     'report_file_prefix': 'ProjectBuilder_Report',
     'file_postfix': str('_v' + key_items["script_version"] + '_' + datetime.datetime.now().strftime("%d_%m_%Y_%H_%M_%S") + '.txt')
 }
@@ -163,9 +200,12 @@ key_configs = {
 
 def main():
 
-    time_log('Main_Process', 'start', '\n--------------------------------\nBeginning the main process: ', key_items["timing"], True)
+    path = path_check(key_configs['report_path'])
+    if not path:
+        print('ERROR: verify the existence of the informed path ("{}")'.format(key_configs['report_path']))
+        return None
 
-    path_check(key_configs['report_path'])
+    time_log('Main_Process', 'start', '\n--------------------------------\nBeginning the main process: ', key_items["timing"], True)
 
     for group in project_configs:
         create_group(group, None)
@@ -174,12 +214,26 @@ def main():
 
         if data_configs[data]['load']:
 
-            path_check(data_configs[data]['path'])
+            if data_configs[data]['connection'] not in {'WFS', 'WMS'}:
 
-            trigger(data_configs[data]['path'], data_configs[data]['layer_group'], data_configs[data]['data_type'], data_configs[data]['appearence'] )
+                path = path_check(data_configs[data]['path'])
+                if not path:
+                    print('FAILED to import the data "{}". Verify the existence of the informed path "{}". Continuing to load the remaining data.'.format(data, data_configs[data]['path']))
+                    continue
+
+                trigger(data_configs[data]['path'], data_configs[data]['layer_group'], data_configs[data]['data_type'], data_configs[data]['connection'], data_configs[data]['appearence'] )
+            
+            if data_configs[data]['connection'] in {'WFS', 'WMS'}:
+
+                if not QgsProject.instance().mapLayersByName(data_configs[data]['workspace_and_layer_name']):
+
+                    data_import(data_configs[data]['path'], data, data_configs[data]['layer_group'], data_configs[data]['data_type'], data_configs[data]['connection'], data_configs[data]['appearence'])
+                
+                else:
+                    conditional_print('Layer "{}" already exsists in thi project.'.format(data_configs[data]['workspace_and_layer_name']), False, True)
     
     time_log('Main_Process', 'end', '\nEnding the main process: ', key_items["timing"], True)
-    conditional_print(str(' Duration: ' + procedure_time('Main_Process')), True, True)
+    conditional_print(str(' Duração: ' + procedure_time('Main_Process')), True, True)
 
 
 
@@ -196,16 +250,22 @@ def conditional_print(something_to_print, screen_report, file_report):
 # Runs a verification on the path provided by the user
 def path_check(path):
 
-    # conditional_print(path, True, False)
+    if path:
 
-    path = path.replace('\\','/')
+        path = path.replace('\\','//')
 
-    if path[len(path)-1] != '/':
+        if path[len(path)-1] != '/':
 
-        path += '/'
+            path += '/'
 
-        # conditional_print(path, True, False)
+        if os.path.isdir(path):
+            return True
 
+        else:
+            return False
+    
+    else:
+        return False
 
 
 # Time Log
@@ -236,19 +296,51 @@ def procedure_time(process):
 
 
 # imports VECTOR and RASTER data
-def data_import(path, layer_name, layer_group, data_type, appearence):
+def data_import(path, layer_name, layer_group, data_type, connection, appearence):
 
     if data_type == 'vector':
 
-        layer = QgsVectorLayer(path, layer_name, "ogr")
+        if connection == 'WFS':          
+
+            uri = QgsDataSourceUri()
+            uri.setParam('service', connection)
+            uri.setParam('version', '1.1.0')
+            # uri.setParam('request', 'GetFeature')
+            uri.setParam('typename', data_configs[layer_name]['workspace_and_layer_name'])
+            # uri.setParam('srsName', 'EPSG:31983')
+            uri.setUsername(data_configs[layer_name]['user'])
+            uri.setPassword(data_configs[layer_name]['psw'])
+            uri.setParam('url', path)
+
+            layer = QgsVectorLayer(uri.uri(), data_configs[layer_name]['workspace_and_layer_name'], connection)
+
+        else:
+
+            layer = QgsVectorLayer(path, layer_name, connection)
 
     if data_type == 'raster':
 
-        layer = QgsRasterLayer(path, layer_name)
+        if connection == 'WMS':
 
-    if not layer:
+            uri = QgsDataSourceUri()
+            uri.setParam('layers', data_configs[layer_name]['workspace_and_layer_name'])
+            uri.setParam("styles", '')
+            uri.setParam('format', 'image/png')
+            uri.setParam('crs', data_configs[layer_name]['crs'])
+            uri.setParam('dpiMode', '7')
+            uri.setParam('featureCount', '10')
+            uri.setParam('contextualWMSLegend', '0')
+            uri.setParam('url', path)
 
-        conditional_print('Failed to load the layer "{}".'.format(layer_name), True, True)
+            layer = QgsRasterLayer(str(uri.encodedUri(), "utf-8"), data_configs[layer_name]['workspace_and_layer_name'], connection)
+        
+        else:
+
+            layer = QgsRasterLayer(path, layer_name)
+
+    if not layer.isValid():
+
+        conditional_print('FALHA ao carregar o layer "{}".'.format(layer_name), True, True)
 
     else:
 
@@ -258,7 +350,7 @@ def data_import(path, layer_name, layer_group, data_type, appearence):
 
         layer_positioning(layer, layer_group)
 
-        conditional_print('The layer "{}" has been successfuly imported.'.format(layer_name), False, True)
+        conditional_print('Layer "{}" importado com sucesso.'.format(layer_name), False, True)
 
 
 
@@ -363,7 +455,7 @@ def map_files(source, data_type):
 
 
 # Triggers the procedure according with the data type (vector or raster)
-def trigger(source, layer_group, data_type, appearence):
+def trigger(source, layer_group, data_type, connection, appearence):
 
         file_list = map_files(source, data_type)
 
@@ -375,13 +467,13 @@ def trigger(source, layer_group, data_type, appearence):
 
                 if not QgsProject.instance().mapLayersByName(layer_name):
 
-                    data_import(str(file), layer_name, layer_group, data_type, appearence)
+                    data_import(str(file), layer_name, layer_group, data_type, connection, appearence)
 
                 else:
-                    conditional_print('The layer "{}" aleready exists in the project.'.format(layer_name), True, True)
+                    conditional_print('Layer "{}" already exsists in thi project.'.format(layer_name), False, True)
 
         else:
-            conditional_print('No file with type "{}" was found in the path:\n"{}"'.format(data_type, source), True, True)
+            conditional_print('No file with type "{}" was found in the directory:\n"{}"'.format(data_type, source), True, True)
             pass
 
 
@@ -400,13 +492,13 @@ def layer_positioning( layer, layer_group ):
         root.findLayer( layer.id() ).setItemVisibilityChecked( False )
     
     else:
-        conditional_print('The group "{}" does not exist in the project. Check the name informed in the script. For now, the layer will be imported to the root of the layer tree.'.format(layer_group, layer.name()), True, True)
+        conditional_print('The group "{}" does not exist in this project. Check the name informed in "project_configs". For now, the layer will be inserted into the root.'.format(layer_group, layer.name()), True, True)
 
         root.addLayer( layer )
 
         root.findLayer( layer.id() ).setItemVisibilityChecked( False )
 
-        conditional_print('The layer "{}" has been successfuly imported to the root of the layer tree.'.format( layer.name() ), True, True)     
+        conditional_print('The layer "{}" was successfuly inserted into the root.'.format( layer.name() ), True, True)     
 
 
 
@@ -429,11 +521,11 @@ def create_group( group, nest_root ):
             # Creates new group in the root group to hold the subgroups afterwards
             root.addChildNode(new_group)
 
-            conditional_print('Group "{}" created with success.'.format( nest_root_group_name ), False, True)
+            conditional_print('Group "{}" criated with success.'.format( nest_root_group_name ), False, True)
 
         else:
 
-                conditional_print('The group "{}" already exists in the project.'.format( nest_root_group_name ), True, True)
+                conditional_print('Group "{}" already exists in thi project.'.format( nest_root_group_name ), False, True)
                 pass
 
         for subgroup in group[ list(group.keys())[0] ]:
@@ -455,11 +547,11 @@ def create_group( group, nest_root ):
                 # Creates subgroup in the relative root group
                 relative_root.addChildNode(new_group)
 
-                conditional_print('Group "{}" created with success.'.format( group ), False, True)
+                conditional_print('Group "{}" criated with success.'.format( group ), False, True)
 
             else:
 
-                conditional_print('The group "{}" already exists in the project.'.format( group ), True, True)
+                conditional_print('Group "{}" already exists in thi project.'.format( group ), False, True)
                 pass
 
         else:
@@ -472,11 +564,11 @@ def create_group( group, nest_root ):
                 # Creates new group in the root group
                 root.addChildNode(new_group)
 
-                conditional_print('Group "{}" created with success.'.format( group ), False, True)
+                conditional_print('Group "{}" criated with success.'.format( group ), False, True)
             
             else:
 
-                conditional_print('The group "{}" already exists in the project.'.format( group ), True, True)
+                conditional_print('Group "{}" already exists in thi project.'.format( group ), False, True)
                 pass
 
 
